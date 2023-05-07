@@ -37,11 +37,26 @@ export interface LoginDTO {
   password: string;
 }
 
-export interface LoginDTOResponse {
-  accessToken: JWTToken;
-  refreshToken: RefreshToken;
-  userId:string;
+
+interface ILoginUser {
+   username: string;
+   email: string;
+   userId:string;
+   entityId:string;
+   entityUserRef:string;
+   roles:string[];
+   entity:string;
+   userType:string;
+   userSubType:string;
+   loginId:string;
 }
+
+export interface LoginDTOResponse {
+  refreshToken: RefreshToken;
+  user:ILoginUser;
+}
+
+
 type Response = Either< 
   LoginError.InvalidCredentialsError | 
   AppError.UnexpectedError |
@@ -63,9 +78,6 @@ export default class LoginUseCase extends BaseUseCase implements IUseCase<ILogin
          }
 
          const id=DomainId.create(); 
-
-
-    
         const userEntity = userExists.getResult();
 
         const isPasswordValid= await userEntity.validatePassword(request.password);
@@ -104,13 +116,23 @@ export default class LoginUseCase extends BaseUseCase implements IUseCase<ILogin
           });
           const refreshToken: RefreshToken = this.authService
           .createRefreshToken();
-          userEntity.setAccessToken(accessToken, refreshToken);
+          userEntity.setAccessToken(accessToken, refreshToken); // later do away with this
         await this.authService.saveAuthenticatedUser(userEntity);
   
         return right(Result.ok<LoginDTOResponse>({
-          accessToken,
           refreshToken,
-          userId:userEntity.userId
+          user:{
+            username: userEntity.username.value,
+            email: userEntity.email.value,
+            userId:userEntity.userId,
+            entityId:userEntity.entity,
+            entityUserRef:userEntity.entityUserRef,
+            roles:userEntity.roles,
+            entity:userEntity.entity,
+            userType:userEntity.userType,
+            userSubType:userEntity.userSubType ,
+            loginId:id.toString()
+          }
         })); 
   
      } catch (error) {

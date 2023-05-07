@@ -1,0 +1,24 @@
+{
+	"compilerOptions": {
+		"module": "commonjs",
+		"declaration": true,
+		"noImplicitAny": false,
+		"removeComments": false,
+		"emitDecoratorMetadata": true,
+		"experimentalDecorators": true,
+		"allowSyntheticDefaultImports": true,
+		"noUnusedLocals": false,
+		"noUnusedParameters": false,
+		"skipDefaultLibCheck": true,
+		"skipLibCheck": true,
+		"target": "es2022",
+		"strict": false,
+		//"lib": ["ES2017"],
+		"sourceMap": true,
+		"outDir": "./dist",
+		"esModuleInterop": true,
+		"baseUrl": "./"
+	},
+	"include": ["lib/*", "lib/**/*", "example", "tests", "types"],
+	"exclude": ["node_modules", "**/__tests__/*"]
+}
